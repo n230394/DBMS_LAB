@@ -1,4 +1,4 @@
-USE TAXIATION;
+USE taxiation;
 show tables;
 /* partA -verify previous databse */
 select * from financial_year;
