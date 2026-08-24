@@ -3,9 +3,10 @@ Key Constraints using a Taxation Database
 
 
 /*---Part A – Redesigning the Database---*/
-USE TAXIATION;
+USE taxiation;
 
 select * from financial_year;
+select * from Income_Record;
 
 
 
@@ -139,10 +140,10 @@ FROM Financial_Year;
 
 
 SELECT DISTINCT income_source
-FROM Income_Record;
+FROM Income_Record;/
 
 
-
+,
 /*-----Part D – UNION-----*/
 SELECT t.full_name
 FROM Taxpayer t
@@ -178,7 +179,6 @@ UNION
 SELECT full_name
 FROM Taxpayer
 WHERE occupation = 'Software Engineer';
-
 /*----Part E – INTERSECT -----*/
 select * from taxpayer;
 select * from income_record;
@@ -219,7 +219,7 @@ FROM Income_Record
 WHERE year_id = 6
 AND taxpayer_id NOT IN
 (
-    SELECT taxpayer_id
+    SELECT taxpayer_id,
     FROM Income_Record
     WHERE year_id = 5
 );
@@ -266,6 +266,11 @@ WHERE category_id NOT IN
     FROM Income_Record
 );
 
+
+SELECT occupation from Taxpayer where occupation not in (select distinct t.occupation from Taxpayer t
+join Income_Record ir on t.taxpayer_id=ir.taxpayer_id);
+
+
 /*----Part I – EXISTS -----*/
 SELECT t.taxpayer_id, t.full_name
 FROM Taxpayer t
@@ -274,8 +279,7 @@ WHERE EXISTS
     SELECT 1
     FROM Income_Record ir
     WHERE ir.taxpayer_id = t.taxpayer_id
-);
-
+); 
 
 
 SELECT c.category_id, c.category_name
