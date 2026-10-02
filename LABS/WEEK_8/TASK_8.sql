@@ -194,30 +194,135 @@ from income_record
 where income_id in (1001, 1002);
 
 
-/* Part D – DCL: Users and Privileges*/
-create user 'tax_clerk1'@'localhost'
-identified by 'Tax@123';
+//* part d – dcl: users and privileges */
 
-select user, host
-from mysql.user
-where user = 'tax_clerk1';
+revoke all privileges, grant option
+from 'tax_clerk1'@'localhost';
 
-/* task 2*/
+show grants for 'tax_clerk1'@'localhost';
+
+
+/* task 2 */
+
 grant select on taxiation.taxpayer
 to 'tax_clerk1'@'localhost';
 
 show grants for 'tax_clerk1'@'localhost';
 
+
 /* task 3 */
-grant insert on taxiation.Income_Record
+
+grant insert on taxiation.income_record
 to 'tax_clerk1'@'localhost';
 
 show grants for 'tax_clerk1'@'localhost';
-insert into Income_Record
-(income_id, taxpayer_id, income_source, category_id, amount, received_date, year_id)
-values
-(1011, 101, 'Bonus Income', 1, 50000, '2026-03-31', 6);
+
+/* task 4 */
+select current_user();
+update income_record
+set amount = 900000
+where income_id = 1001;
+/* task 5 */
+create or replace view Taxpayer_Income_Summary as
+select taxpayer_id, sum(amount) as total_income
+from Income_Record
+group by taxpayer_id;
+
+grant select on taxiation.Taxpayer_Income_Summary
+to 'tax_clerk1'@'localhost';
+
+show grants for 'tax_clerk1'@'localhost';
 
 select *
+from Taxpayer_Income_Summary;
+/* task 6 */
+revoke insert on taxiation.income_record
+from 'tax_clerk1'@'localhost';
+
+show grants for 'tax_clerk1'@'localhost';
+
+/* Part E – DCL: Security and Least Privilege */
+
+create user 'tax_data_entry'@'localhost'
+identified by 'Tax@123';
+
+grant select, insert
+on taxiation.income_record
+to 'tax_data_entry'@'localhost';
+
+show grants for 'tax_data_entry'@'localhost';
+
+select current_user();
+/* task 2*/
+
+create user 'tax_officer'@'localhost'
+identified by 'Tax@456';
+
+grant select, insert, update
+on taxiation.income_record
+to 'tax_officer'@'localhost';
+
+show grants for 'tax_officer'@'localhost';
+
+select *
+from income_record;
+
+insert into income_record
+(income_id, taxpayer_id, income_source, category_id, amount, received_date, year_id)
+values
+(1017, 102, 'Bonus Income', 1, 60000, '2026-03-31', 6);
+
+update income_record
+set amount = 1250000
+where income_id = 1002;
+
+delete from income_record
+where income_id = 1017;
+
+/* task 3 */
+create or replace view Taxpayer_Income_Summary as
+select taxpayer_id,
+       sum(amount) as total_income
 from Income_Record
-where income_id = 1011;
+group by taxpayer_id;
+
+grant select
+on taxiation.Taxpayer_Income_Summary
+to 'tax_officer'@'localhost';
+
+show grants for 'tax_officer'@'localhost';
+
+/* task 4 */
+create user 'tax_user'@'localhost'
+identified by 'Tax@789';
+
+grant select, insert, update
+on taxiation.income_record
+to 'tax_user'@'localhost';
+
+show grants for 'tax_user'@'localhost';
+
+revoke update
+on taxiation.income_record
+from 'tax_user'@'localhost';
+
+show grants for 'tax_user'@'localhost';
+
+select *
+from income_record;
+
+-- INSERT should work
+insert into income_record
+(income_id, taxpayer_id, income_source, category_id, amount, received_date, year_id)
+values
+(1018, 103, 'Other Income', 5, 30000, '2026-03-31', 6);
+
+-- UPDATE should be denied
+update income_record
+set amount = 1850000
+where income_id = 1003;
+
+/* task 5 */
+show grants for 'tax_data_entry'@'localhost';
+
+show grants for 'tax_officer'@'localhost';
