@@ -10,8 +10,11 @@ where amount =(select max(amount) from income_record);
 
 
 select * from income_record
-where amount >(select avg(amount) from income_record);
+where amount =(select MIN(amount) from income_record);
 
+
+select * from income_record
+where amount >(select avg(amount) from income_record);
 
 select * from income_record
 where amount =(select max(amount) from income_record);
@@ -55,30 +58,43 @@ where category_id in( select category_id from income_record);
 select * from income_category
 where category_id not in( select category_id from income_record);
 
+SELECT * FROM taxpayer where taxpayer_id not in(
+select taxpayer_id from income_record where category_id=3);
 
 /* level_3 */
 select * from Taxpayer
-where taxpayer_id in(select taxpayer_id from income_record where amount=(select max(amount) from income_record));
+where taxpayer_id in(select taxpayer_id from income_record where amount
+=(select max(amount) from income_record));
 
 
-select * from Taxpayer
+select * from income_record
 where taxpayer_id in(select taxpayer_id from income_record where amount>(select avg(amount) from income_record
 where category_id=2));
 
 
 select * from Taxpayer
-where taxpayer_id in(select taxpayer_id from income_record where amount>(select avg(amount) from income_record));
+where taxpayer_id in(select taxpayer_id from income_record where amount>(select avg
+(amount) from income_record));
 
 
 select  * from income_record where amount> any(select amount from income_record where category_id=3);
 
 select * from income_record;
+
 select  * from income_record where amount> all(select amount from income_record where category_id=3);
+
+
+select * from income_category where category_id in
+(select category_id from income_record where amount=(select max(amount) from income_record));
 
 
 select * from financial_year
 where year_id in(select year_id from income_record where amount=(select sum(amount) from income_record)
 group by year_id);
+
+
+select * from taxpayer where 
+annual_income=(select avg(annual_income) from taxpayer);
 
 
 

@@ -6,6 +6,7 @@ select * from income_category;
 
 /* Lvel 1  */
 create view high_income as select * from income_record where amount=(select max(amount) from income_record);
+
 create view low_income as select * from income_record where amount=(select min(amount) from income_record);
 create view greater_than_avg as select * from income_record where amount>(select avg(amount) from income_record);
 create view highest_income as select * from income_record where amount=(select max(amount) from income_record);
@@ -29,8 +30,13 @@ where year_label='2025-2026');
 
 
 select * from income_record;
-create view businnes_amount as select * from income_record where amount>(select min(amount) from income_record where category_id=2);
-create view businnes_amount_salary as select * from income_record where amount<(select max(amount) from income_record where category_id=1);
+create view businnes_amount as select * from income_record where amount>
+(select min(amount) from income_record where category_id=2);
+
+
+create view businnes_amount_salary as select * from income_record where amount
+<(select max(amount) from income_record where category_id=1);
+
 create view taxpayer_amount as select * from taxpayer where taxpayer_id in(
 select taxpayer_id from income_record where amount>(
 select avg(amount) from income_record));
@@ -62,7 +68,7 @@ select * from taxpayer where annual_income>(
 select avg(annual_income)from taxpayer);
 
 
-select * from income_record where amoun>any(select amount from income_record where category_id=3);
+select * from income_record where amount>any(select amount from income_record where category_id=3);
 select * from income_record where amount>all(select amount from income_record where category_id=3);
 
 select * from income_category;

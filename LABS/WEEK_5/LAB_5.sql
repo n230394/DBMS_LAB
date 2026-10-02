@@ -28,7 +28,7 @@ group by (income_source);
 
 
 
-select count(amount) from income_record
+select count(*) from income_record
 group by (year_id);
 
 select sum(amount) from income_record
@@ -49,23 +49,33 @@ group by year_id,income_source;
 
 /* level 3*/
 
+select 1 where NULL=NULL;
 select sum(amount) from income_record
 group by (income_source)
 having sum(amount)>1000000;
 
-
-select avg(amount) from income_record
+select income_source, avg(amount) from income_record
 group by (income_source)
 having avg(amount)>50000;
 
-select count(amount) from income_record
-group by (year_id)
-having count(amount)>3;
+select year_id,COUNT(*) AS record_count from income_record 
+group by year_id having count(*)>3;
 
 
-select sum(amount) from income_record
+
+select income_source, sum(amount) from income_record
 group by (income_source)
 order by sum(amount) desc;
+
+select * from income_category;
+select * from income_record;
+
+select category_id, sum(amount) as total_income
+from income_record
+group by category_id 
+having sum(amount)>1000000
+order by sum(amount) desc;
+
 
 
 select sum(amount) from income_record
@@ -79,7 +89,7 @@ group by (income_source);
 
 
 
-select sum(amount) from income_record
+select income_source,year_id, sum(amount) from income_record
 group by income_source,year_id
 order by sum(amount) desc
 limit 1;
@@ -140,4 +150,3 @@ from Income_Record I
 join Income_Category C
 on I.category_id = C.category_id
 group by C.category_name;
-

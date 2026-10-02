@@ -10,14 +10,16 @@ select * from taxpayer;
 
 
 /*Task-1 Display every taxpayer along with the income source using an INNER JOIN.*/
-select full_name  from taxpayer as t
+select t.full_name,i.income_source  from taxpayer as t
 inner join income_record as i
 on t.taxpayer_id=i.taxpayer_id;
 
 /*Task-2 Display every taxpayer along with the category of income they earn. */
-select full_name,category_name from taxpayer as t
-inner join income_category as i
-on t.taxpayer_id=i.category_id;
+select t.full_name,ic.category_name from taxpayer as t
+inner join income_record as i
+on t.taxpayer_id=i.taxpayer_id
+inner join income_category ic
+on i.category_id=ic.category_id;
 
 
 /*Task-3 Display every income record along with its financial year. */
@@ -141,14 +143,12 @@ LEFT JOIN Income_Record AS ir
 ON t.taxpayer_id = ir.taxpayer_id;
 /*Task-2 Display all income categories including those that are not 
 associated with any income records*/
-SELECT
+SELECT distinct
     c.category_id,
     c.category_name,
-    c.descriptionn,
-    ir.income_source,
-    ir.amount
+    c.descriptionn
 FROM Income_Category AS c
-LEFT JOIN Income_Record AS ir
+right JOIN Income_Record AS ir
 ON c.category_id = ir.category_id;
 /*Task-3 Display all taxpayers and all income records, including 
 unmatched records from both tables.*/
@@ -191,7 +191,7 @@ SELECT
     t2.full_name AS taxpayer2_name,
     t1.occupation
 FROM Taxpayer AS t1
-INNER JOIN Taxpayer AS t2
+JOIN Taxpayer AS t2
 ON t1.occupation = t2.occupation
 AND t1.taxpayer_id < t2.taxpayer_id;
 /*Additional Practice(optional) */
